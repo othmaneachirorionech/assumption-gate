@@ -92,3 +92,7 @@ No continuation after material context change without reauthorization.
 ## Status
 
 v0.1 — Experimental. Intended for developers building local agents, automations, workflow tools, and approval gates.
+
+## Feedback
+
+If you are building AI agents, workflow systems, or governance layers, open an issue and share your use case.
