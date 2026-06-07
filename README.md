@@ -1,20 +1,22 @@
-# Context Drift Gate
+# assumption-gate
 
-**Context Drift Gate** is a tiny Python primitive for workflow and AI-agent control.
+**assumption-gate** is a tiny Python primitive for workflow and AI-agent control.
 
 It answers one question during execution:
 
 > Is the context that authorized this workflow still valid?
 
-Most systems authorize a workflow at the start. Context Drift Gate checks whether continuation is still allowed after material context changes.
+Most systems authorize a workflow at the start. assumption-gate checks whether continuation is still allowed after material context changes.
 
 ## Why this exists
 
 Tracing tells you what happened.
+
 Guardrails validate inputs, outputs, or risky actions.
+
 Budget limits stop execution after a fixed threshold.
 
-Context Drift Gate focuses on a different failure mode:
+assumption-gate focuses on a different failure mode:
 
 > The workflow is still running, but the assumptions that made it safe are no longer true.
 
@@ -29,7 +31,12 @@ Decision = CONTINUE | PAUSE_FOR_REVIEW | STOP
 ## Example
 
 ```python
-from context_drift_gate import ContextContract, ContextEvent, ContextDriftGate, RiskLevel
+from context_drift_gate import (
+    ContextContract,
+    ContextEvent,
+    ContextDriftGate,
+    RiskLevel,
+)
 
 contract = ContextContract(
     workflow_id="lead-email-agent",
@@ -46,53 +53,94 @@ contract = ContextContract(
 
 gate = ContextDriftGate(contract)
 
-result = gate.evaluate(ContextEvent(
-    name="lead_context_changed",
-    changes={"lead_type": "government_agency"},
-    evidence="Lead domain belongs to a public institution.",
-))
+result = gate.evaluate(
+    ContextEvent(
+        name="lead_context_changed",
+        changes={"lead_type": "government_agency"},
+        evidence="Lead domain belongs to a public institution.",
+    )
+)
 
-print(result.decision)  # PAUSE_FOR_REVIEW
+print(result.decision)
 print(result.reason)
 ```
 
-## Install locally
+Expected result:
+
+```text
+PAUSE_FOR_REVIEW
+Material context change detected.
+```
+
+## Quick Start
 
 ```bash
-git clone https://github.com/your-username/context-drift-gate.git
-cd context-drift-gate
+git clone https://github.com/othmaneachirorionech/assumption-gate.git
+
+cd assumption-gate
+
 python -m venv .venv
+
 source .venv/bin/activate
+
 pip install -e .
+
 python examples/email_agent_example.py
 ```
 
-## Run tests
+## Run Tests
 
 ```bash
 python -m unittest discover -s tests
 ```
 
-## What this is not
+## What This Is Not
 
-- Not a full governance platform.
-- Not a replacement for observability.
-- Not a security sandbox.
-- Not an autonomous decision-maker.
-- Not a compliance guarantee.
+* Not a full governance platform.
+* Not a replacement for observability.
+* Not a security sandbox.
+* Not an autonomous decision-maker.
+* Not a compliance guarantee.
+* Not a replacement for human approval.
 
-It is a small control primitive: **pause or stop when material context changes require reauthorization.**
+It is a small control primitive:
 
-## Design rule
+> Pause or stop execution when material context changes require reauthorization.
+
+## Design Rule
 
 ```text
 No continuation after material context change without reauthorization.
 ```
 
+## Background
+
+assumption-gate is inspired by the Assumption Decay Doctrine:
+
+> Every operational assumption has a shelf life.
+
+A workflow may continue executing long after the assumptions that justified its execution have changed.
+
+When material context changes occur, continued execution should not be treated as automatically valid.
+
 ## Status
 
-v0.1 — Experimental. Intended for developers building local agents, automations, workflow tools, and approval gates.
+v0.1.1 — Experimental.
+
+Intended for developers building:
+
+* AI agents
+* Workflow systems
+* Approval gates
+* Automation pipelines
+* Local-first agent architectures
 
 ## Feedback
 
-If you are building AI agents, workflow systems, or governance layers, open an issue and share your use case.
+If you are building AI agents, workflow systems, governance layers, or execution controls, open an issue and share your use case.
+
+Contributions, discussions, and critiques are welcome.
+
+## License
+
+See the LICENSE file for details.
