@@ -123,6 +123,15 @@ A workflow may continue executing long after the assumptions that justified its 
 
 When material context changes occur, continued execution should not be treated as automatically valid.
 
+## Background
+
+assumption-gate is inspired by the [Assumption Decay Doctrine](docs/assumption-decay-doctrine.md):
+
+> Every operational assumption has a shelf life.
+
+A workflow may continue executing long after the assumptions that justified its execution have changed.
+
+When material context changes occur, continued execution should not be treated as automatically valid.
 ## Status
 
 v0.1.1 — Experimental.
